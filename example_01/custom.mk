@@ -1,9 +1,10 @@
 # This file is included by the generated Makefile.  If you have some things you
 # want to change about the Makefile, it is best to do it here.
 
-MFEM_SRC        = $(abspath ../mfem)
-HYPRE_SRC       = $(abspath ../hypre)
-METIS_SRC       = $(abspath ../metis-4.0)
+PACKAGES_DIR   := $(abspath ../packages)
+MFEM_SRC       := $(PACKAGES_DIR)/mfem
+HYPRE_SRC      := $(PACKAGES_DIR)/hypre
+METIS_SRC      := $(PACKAGES_DIR)/metis-4.0
 
 SOURCE         :=
 SOURCE         += $(wildcard *.cpp)

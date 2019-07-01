@@ -3,6 +3,9 @@
 set -e
 set -u
 
+mkdir -p packages
+pushd packages
+
 export MAKEFLAGS=-j8
 
 # clone and build hypre
@@ -40,3 +43,6 @@ make --directory mfem-${MFEM_VERSION}
 ## rm glvis-${GLVIS_VERSION}.tgz
 ## make clean --directory glvis-${GLVIS_VERSION}
 ## make MFEM_DIR=../mfem-${MFEM_VERSION} --directory glvis-${GLVIS_VERSION}
+
+# out of packages
+popd
