@@ -1,26 +1,20 @@
-
-
 #include "flit.h"
 
 #include <string>
 #include <cmath>
 
-
-
-
-#define main flit_mfem_example_13p_main
+// Redefine main() to avoid name clash.  This is the function we will test
+#define main mfem_13p_main
 #include "ex13p.cpp"
 #undef main
-FLIT_REGISTER_MAIN(flit_mfem_example_13p_main);
-
-
-
+// Register it so we can use it in call_main() or call_mpi_main()
+FLIT_REGISTER_MAIN(mfem_13p_main);
 
 
 template <typename T>
-class flit_mfem_example_13p : public flit::TestBase<T> {
+class Mfem13 : public flit::TestBase<T> {
 public:
-  flit_mfem_example_13p(std::string id) : flit::TestBase<T>(std::move(id)) {}
+  Mfem13(std::string id) : flit::TestBase<T>(std::move(id)) {}
   virtual size_t getInputsPerRun() override { return 0; }
   virtual std::vector<T> getDefaultInput() override { return { }; }
 
@@ -57,6 +51,7 @@ public:
 
 protected:
   virtual flit::Variant run_impl(const std::vector<T> &ti) override {
+    // Empty test for the general case
     FLIT_UNUSED(ti);
     return flit::Variant();
   }
@@ -65,23 +60,25 @@ protected:
   using flit::TestBase<T>::id;
 };
 
+// Only implement the test for double precision
 template<>
-flit::Variant flit_mfem_example_13p<double>::run_impl(const std::vector<double> &ti) {
+flit::Variant Mfem13<double>::run_impl(const std::vector<double> &ti) {
   FLIT_UNUSED(ti);
 
-  // Make a temporary directory to run in
+  // Run in a temporary directory so output files don't clash
   std::string start_dir = flit::fsutil::curdir();
   flit::fsutil::TempDir exec_dir;
   flit::fsutil::PushDir pusher(exec_dir.name());
 
-  // run the example's main
+  // Run the example's main under MPI
+  auto meshfile = flit::fsutil::join(start_dir, "data", "star.mesh"));
   auto result = flit::call_mpi_main(
-                     flit_mfem_example_13p_main,
+                     mfem_13p_main,
                      "mpirun -n 1 --bind-to none",
-                     "flit_mfem_example_13p",
-                     "--no-visualization --mesh "
-                       + flit::fsutil::join(start_dir, "data", "beam-tet.mesh"));
+                     "Mfem13",
+                     "--no-visualization --mesh " + meshfile);
 
+  // Output debugging information
   std::ostream &out = flit::info_stream;
   out << id << " stdout: " << result.out << "\n";
   out << id << " stderr: " << result.err << "\n";
@@ -92,7 +89,7 @@ flit::Variant flit_mfem_example_13p<double>::run_impl(const std::vector<double> 
     throw std::logic_error("Failed to run my main correctly");
   }
 
-  // We will be returning a vec of strings that hold the mesh data
+  // We will be returning a vector of strings that hold the mesh data
   std::vector<std::string> retval;
 
   // Get the mesh
@@ -101,8 +98,8 @@ flit::Variant flit_mfem_example_13p<double>::run_impl(const std::vector<double> 
   std::string mesh_str = flit::fsutil::readfile(mesh_name.str());
   retval.emplace_back(mesh_str);
 
-  // Get calculated values
-  for (int i=0; i<5 ; i++) {
+  // Read calculated values
+  for (int i = 0; i < 5 ; i++) {
     ostringstream mode_name;
     mode_name << "mode_" << setfill('0') << setw(2) << i << "."
               << setfill('0') << setw(6) << 0;
@@ -111,7 +108,8 @@ flit::Variant flit_mfem_example_13p<double>::run_impl(const std::vector<double> 
     retval.emplace_back(mode_str);
   }
 
+  // Return the mesh and mode files as strings
   return flit::Variant(retval);
 }
 
-REGISTER_TYPE(flit_mfem_example_13p)
+REGISTER_TYPE(Mfem13)
