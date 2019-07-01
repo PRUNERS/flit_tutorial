@@ -46,7 +46,8 @@ public:
       nume += diff.Norml2();
     }
 
-    return nume / deno;
+    // return the relative error as a percent
+    return 100 * nume / deno;
   }
 
 protected:

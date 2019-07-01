@@ -46,7 +46,8 @@ public:
       nume += diff.Norml2();
     }
 
-    return nume / deno;
+    // return the relative error as a percent
+    return 100 * nume / deno;
   }
 
 protected:
@@ -71,7 +72,7 @@ flit::Variant Mfem13<double>::run_impl(const std::vector<double> &ti) {
   flit::fsutil::PushDir pusher(exec_dir.name());
 
   // Run the example's main under MPI
-  auto meshfile = flit::fsutil::join(start_dir, "data", "star.mesh"));
+  auto meshfile = flit::fsutil::join(start_dir, "data", "beam-tet.mesh");
   auto result = flit::call_mpi_main(
                      mfem_13p_main,
                      "mpirun -n 1 --bind-to none",
