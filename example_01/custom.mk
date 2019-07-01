@@ -17,14 +17,8 @@ SOURCE         += $(wildcard tests/*.cpp)
 #SOURCE         += $(wildcard ${MFEM_SRC}/linalg/*.cpp)
 #SOURCE         += $(wildcard ${MFEM_SRC}/mesh/*.cpp)
 
+# just the one source file to see there is a difference
 SOURCE         += ${MFEM_SRC}/linalg/densemat.cpp  # where the bug is
-
-# a few more files to make the search space a bit more interesting
-SOURCE         += ${MFEM_SRC}/linalg/matrix.cpp
-SOURCE         += ${MFEM_SRC}/fem/gridfunc.cpp
-SOURCE         += ${MFEM_SRC}/fem/linearform.cpp
-SOURCE         += ${MFEM_SRC}/mesh/point.cpp
-SOURCE         += ${MFEM_SRC}/mesh/quadrilateral.cpp
 
 CC_REQUIRED    += -I${MFEM_SRC}
 CC_REQUIRED    += -I${MFEM_SRC}/examples
