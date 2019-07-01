@@ -29,29 +29,14 @@ export MFEM_VERSION=4.0
 wget https://github.com/mfem/mfem/archive/v${MFEM_VERSION}.tar.gz
 tar -xzf v${MFEM_VERSION}.tar.gz
 rm v${MFEM_VERSION}.tar.gz
+ln -s mfem-${MFEM_VERSION} mfem
 make config MFEM_USE_MPI=YES --directory mfem-${MFEM_VERSION}
 make --directory mfem-${MFEM_VERSION}
 
-# clone and build glvis
-export GLVIS_VERSION=3.4
-wget http://glvis.github.io/releases/glvis-${GLVIS_VERSION}.tgz
-tar -xzf glvis-${GLVIS_VERSION}.tgz
-rm glvis-${GLVIS_VERSION}.tgz
-make clean --directory glvis-${GLVIS_VERSION}
-make MFEM_DIR=../mfem-${MFEM_VERSION} --directory glvis-${GLVIS_VERSION}
-
-
-##pushd hypre-2.10.0b/src
-##./configure --disable-fortran
-##make
-##popd
-##
-##pushd metis
-##make
-##popd
-##
-##pushd mfem
-##make config MFEM_USE_MPI=YES
-##popd
-
-
+## # clone and build glvis
+## export GLVIS_VERSION=3.4
+## wget http://glvis.github.io/releases/glvis-${GLVIS_VERSION}.tgz
+## tar -xzf glvis-${GLVIS_VERSION}.tgz
+## rm glvis-${GLVIS_VERSION}.tgz
+## make clean --directory glvis-${GLVIS_VERSION}
+## make MFEM_DIR=../mfem-${MFEM_VERSION} --directory glvis-${GLVIS_VERSION}
