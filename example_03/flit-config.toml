@@ -3,8 +3,8 @@ enable_mpi = true
 
 [dev_build]
 compiler_name = 'g++'
-optimization_level = '-O2'
-switches = ''
+optimization_level = '-O3'
+switches = '-mavx2 -mfma'
 
 [ground_truth]
 compiler_name = 'g++'
@@ -16,13 +16,12 @@ binary = 'g++'
 name = 'g++'
 type = 'gcc'
 optimization_levels = [
-  '-O3',
+    '-O3',
 ]
 switches_list = [
-  '-freciprocal-math',
-  '-funsafe-math-optimizations',
-  '-mavx2 -mfma',
-  ''
+    '-ffast-math',
+    '-funsafe-math-optimizations',
+    '-mfma',
 ]
 
 [[compiler]]
@@ -30,11 +29,11 @@ binary = 'clang++'
 name = 'clang++'
 type = 'clang'
 optimization_levels = [
-  '-O3',
+    '-O3',
 ]
 switches_list = [
-  '-freciprocal-math',
-  '-funsafe-math-optimizations',
-  ''
+    '-ffast-math',
+    '-funsafe-math-optimizations',
+    '-mfma',
 ]
 

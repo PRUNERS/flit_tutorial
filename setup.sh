@@ -46,5 +46,8 @@ make --directory mfem-${MFEM_VERSION}
 ## make clean --directory glvis-${GLVIS_VERSION}
 ## make MFEM_DIR=../mfem-${MFEM_VERSION} --directory glvis-${GLVIS_VERSION}
 
+# clone LULESH
+git clone https://github.com/LLNL/LULESH.git
+
 # out of packages
 popd
