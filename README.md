@@ -20,6 +20,21 @@ We will go through three exercises for using FLiT.
    through all of the variability compilations found in the first step.
 
 
+## Setup
+
+For the tutorial, setup has already been performed.  If you are running this
+outside of the tutorial, a `setup.sh` script is provided to download and
+compile the source code of the example packages for each exercise.
+
+```bash
+$ bash setup.sh
+```
+
+This does not, however, download or install FLiT.  For that, please go to the
+[FLiT GitHub Repository](https://github.com/PRUNERS/FLiT.git) for details on
+how to build, install, and use FLiT.
+
+
 ## Example 01: MFEM Variability
 
 The files for this tutorial exercise can be found in `exercise-1/`.
