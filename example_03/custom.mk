@@ -14,7 +14,3 @@ CC_REQUIRED    += -Wno-unknown-pragmas
 CC_REQUIRED    += -Wno-unused-parameter
 
 LD_REQUIRED    += -lm
-
-.PHONY: print-%
-print-%:
-	@echo '$*=$($*)'
