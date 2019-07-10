@@ -348,8 +348,21 @@ To create all of the compilations:
 
 ```bash
 $ make runbuild -j1
-... # lots of compilation output
+  mkdir obj/gt
+  /home/user1/Module-FLiT/packages/mfem/linalg/densemat.cpp -> obj/gt/densemat.cpp.o
+  main.cpp -> obj/gt/main.cpp.o
+  tests/Mfem13.cpp -> obj/gt/Mfem13.cpp.o
+Building gtrun
+  mkdir bin
+  mkdir obj/GCC_ip-172-31-8-101_FFAST_MATH_O3
+  /home/user1/Module-FLiT/packages/mfem/linalg/densemat.cpp -> obj/GCC_ip-172-31-8-101_FFAST_MATH_O3/densemat.cpp.o
+[...]
 ```
+
+(takes approximately 1 minute)
+
+_Note: For more verbose output, you can use `VERBOSE=1` with the make
+commands._
 
 You will probably want more processes than 1, but for this tutorial exercise,
 we will stick to this in order to be nice to others using the same machine.
@@ -361,8 +374,17 @@ Now, to run the tests and generate results:
 
 ```bash
 $ make run -j1
-... # lots of running output
+  mkdir results
+  gtrun -> ground-truth.csv
+  results/GCC_ip-172-31-8-101_FFAST_MATH_O3-out -> results/GCC_ip-172-31-8-101_FFAST_MATH_O3-out-comparison.csv
+  results/GCC_ip-172-31-8-101_FUNSAFE_MATH_OPTIMIZATIONS_O3-out -> results/GCC_ip-172-31-8-101_FUNSAFE_MATH_OPTIMIZATIONS_O3-out-comparison.csv
+  results/GCC_ip-172-31-8-101_MFMA_O3-out -> results/GCC_ip-172-31-8-101_MFMA_O3-out-comparison.csv
+  results/CLANG_ip-172-31-8-101_FFAST_MATH_O3-out -> results/CLANG_ip-172-31-8-101_FFAST_MATH_O3-out-comparison.csv
+  results/CLANG_ip-172-31-8-101_FUNSAFE_MATH_OPTIMIZATIONS_O3-out -> results/CLANG_ip-172-31-8-101_FUNSAFE_MATH_OPTIMIZATIONS_O3-out-comparison.csv
+  results/CLANG_ip-172-31-8-101_MFMA_O3-out -> results/CLANG_ip-172-31-8-101_MFMA_O3-out-comparison.csv
 ```
+
+(takes approximately 1 minute)
 
 Here, you will typically want to, at most, run as many processes as processors
 you have so that they do not interfere with each other with regards to timing.
@@ -411,14 +433,14 @@ and the given label.
 
 ```bash
 sqlite> select * from tests;
-id          run         name        host          compiler    optl        switches     precision   comparison_hex       comparison  file                              nanosec   
-----------  ----------  ----------  ------------  ----------  ----------  -----------  ----------  -------------------  ----------  --------------------------------  ----------
-1           1           Mfem13      yoga-manjaro  clang++     -O3         -ffast-math  d           0x00000000000000000  0.0         CLANG_yoga-manjaro_FFAST_MATH_O3  3040131848
-2           1           Mfem13      yoga-manjaro  clang++     -O3         -funsafe-ma  d           0x00000000000000000  0.0         CLANG_yoga-manjaro_FUNSAFE_MATH_  2996176148
-3           1           Mfem13      yoga-manjaro  clang++     -O3         -mfma        d           0x00000000000000000  0.0         CLANG_yoga-manjaro_MFMA_O3        2977203552
-4           1           Mfem13      yoga-manjaro  g++         -O3         -ffast-math  d           0x00000000000000000  0.0         GCC_yoga-manjaro_FFAST_MATH_O3    2915741629
-5           1           Mfem13      yoga-manjaro  g++         -O3         -funsafe-ma  d           0x00000000000000000  0.0         GCC_yoga-manjaro_FUNSAFE_MATH_OP  2967398717
-6           1           Mfem13      yoga-manjaro  g++         -O3         -mfma        d           0x4006c101e1c5965d6  193.007351  GCC_yoga-manjaro_MFMA_O3          2996904910
+id          run         name        host             compiler     optl        switches     precision   comparison_hex       comparison  file                                 nanosec   
+----------  ----------  ----------  ---------------  -----------  ----------  -----------  ----------  -------------------  ----------  -----------------------------------  ----------
+1           1           Mfem13      ip-172-31-8-101  clang++-6.0  -O3         -ffast-math  d           0x00000000000000000  0.0         CLANG_ip-172-31-8-101_FFAST_MATH_O3  2857386994
+2           1           Mfem13      ip-172-31-8-101  clang++-6.0  -O3         -funsafe-ma  d           0x00000000000000000  0.0         CLANG_ip-172-31-8-101_FUNSAFE_MATH_  2853588952
+3           1           Mfem13      ip-172-31-8-101  clang++-6.0  -O3         -mfma        d           0x00000000000000000  0.0         CLANG_ip-172-31-8-101_MFMA_O3        2858789982
+4           1           Mfem13      ip-172-31-8-101  g++-7        -O3         -ffast-math  d           0x00000000000000000  0.0         GCC_ip-172-31-8-101_FFAST_MATH_O3    2841191528
+5           1           Mfem13      ip-172-31-8-101  g++-7        -O3         -funsafe-ma  d           0x00000000000000000  0.0         GCC_ip-172-31-8-101_FUNSAFE_MATH_OP  2868636192
+6           1           Mfem13      ip-172-31-8-101  g++-7        -O3         -mfma        d           0x4006c101e1c5965d6  193.007351  GCC_ip-172-31-8-101_MFMA_O3          2797305220
 ```
 
 Whoa, that's a lot.  Let's just pick a few columns that actually have
@@ -426,14 +448,15 @@ information we care about.
 
 ```bash
 sqlite> select compiler, optl, switches, comparison, nanosec from tests;
-compiler    optl        switches     comparison  nanosec   
-----------  ----------  -----------  ----------  ----------
-clang++     -O3         -ffast-math  0.0         3040131848
-clang++     -O3         -funsafe-ma  0.0         2996176148
-clang++     -O3         -mfma        0.0         2977203552
-g++         -O3         -ffast-math  0.0         2915741629
-g++         -O3         -funsafe-ma  0.0         2967398717
-g++         -O3         -mfma        193.007351  2996904910
+compiler     optl        switches     comparison  nanosec   
+-----------  ----------  -----------  ----------  ----------
+clang++-6.0  -O3         -ffast-math  0.0         2857386994
+clang++-6.0  -O3         -funsafe-ma  0.0         2853588952
+clang++-6.0  -O3         -mfma        0.0         2858789982
+g++-7        -O3         -ffast-math  0.0         2841191528
+g++-7        -O3         -funsafe-ma  0.0         2868636192
+g++-7        -O3         -mfma        193.007351  2797305220
+sqlite> .q
 ```
 
 That's better.  Unfortunately, some of the switches are getting cut off, but oh
@@ -685,7 +708,38 @@ Let me explain this commant a bit:
 and its output:
 
 ```bash
+Before parallel bisect run, compile all object files
+  (1 of 5) clang++ -O3 -freciprocal-math:  done
+  (2 of 5) clang++ -O3 -funsafe-math-optimizations:  done
+  (3 of 5) g++ -O3 -freciprocal-math:  done
+  (4 of 5) g++ -O3 -funsafe-math-optimizations:  done
+  (5 of 5) g++ -O3 -mavx2 -mfma:  done
+Updating ground-truth results - ground-truth.csv - done
 
+Run 1 of 5
+flit bisect --precision double "clang++ -O3 -freciprocal-math" LuleshTest
+Updating ground-truth results - ground-truth.csv - done
+Searching for differing source files:
+  Created ./bisect-01/bisect-make-01.mk - compiling and running - score 5.525114784335379e-05
+  Created ./bisect-01/bisect-make-02.mk - compiling and running - score 0.3327979261374302
+  Created ./bisect-01/bisect-make-03.mk - compiling and running - score 0.0
+  Created ./bisect-01/bisect-make-04.mk - compiling and running - score 0.3327979261374302
+    Found differing source file ../packages/LULESH/lulesh-init.cc: score 0.3327979261374302
+  Created ./bisect-01/bisect-make-05.mk - compiling and running - score 0.33294020544031533
+  Created ./bisect-01/bisect-make-06.mk - compiling and running - score 0.0
+  Created ./bisect-01/bisect-make-07.mk - compiling and running - score 0.0
+  Created ./bisect-01/bisect-make-08.mk - compiling and running - score 0.33294020544031533
+    Found differing source file tests/LuleshTest.cpp: score 0.33294020544031533
+  Created ./bisect-01/bisect-make-09.mk - compiling and running - score 0.0
+  Created ./bisect-01/bisect-make-10.mk - compiling and running - score 5.525114784335379e-05
+all variability inducing source file(s):
+  tests/LuleshTest.cpp (score 0.33294020544031533)
+  ../packages/LULESH/lulesh-init.cc (score 0.3327979261374302)
+Searching for differing symbols in: tests/LuleshTest.cpp
+  Created ./bisect-01/bisect-make-11.mk - compiling and running - score 0.33294020544031533
+  Created ./bisect-01/bisect-make-12.mk - compiling and running - score 0.33294020544031533
+  Created ./bisect-01/bisect-make-13.mk - compiling and running - score 0.0
+[...]
 ```
 
 FLiT Bisect will first make all compilations before running any Bisect steps in
@@ -695,12 +749,106 @@ We won't go through the results here, but FLiT Bisect identifies each site of
 variability from these five variability compilations specified in
 `results.sqlite`.
 
-The final results can be seen in `all-bisect.csv` which can be mined later.
+The final results can be seen in `all-bisect.csv` which can be mined.
+
+```c++
+$ head -n 3 auto-bisect.csv 
+testid,bisectnum,compiler,optl,switches,precision,testcase,type,name,return
+1,1,clang++,-O3,-freciprocal-math,double,LuleshTest,completed,"lib,src,sym",0
+1,1,clang++,-O3,-freciprocal-math,double,LuleshTest,src,"('tests/LuleshTest.cpp', 0.33294020544031533)",0
+```
 
 _Note: if you don't want to run all rows with non-zero values, you can copy the
 database, and perform your own filtering to remove any rows you don't want
 explored.  You can then pass this stripped down database file to auto-bisect to
 explore only the compilations of interest._
+
+
+### Bonus: Find $k$ Biggest Contributors
+
+There is another version of FLiT Bisect that can find the $k$ biggest
+contributors to your variability.  Let's explore this a little, time
+permitting.
+
+If we look closer at the FLiT Bisect results from just previously, we see that
+run 4 had five function sites.
+
+```
+Run 4 of 5
+flit bisect --precision double "g++ -O3 -funsafe-math-optimizations" LuleshTest
+Updating ground-truth results - ground-truth.csv - done
+Searching for differing source files:
+  [...]
+all variability inducing source file(s):
+  ../packages/LULESH/lulesh-init.cc (score 3.7609285311270604)
+  tests/LuleshTest.cpp (score 0.022750390077923448)
+Searching for differing symbols in: ../packages/LULESH/lulesh-init.cc
+  [...]
+All variability inducing symbols:
+  ../packages/LULESH/lulesh-init.cc:16 _ZN6DomainC1Eiiiiiiiii -- Domain::Domain(int, int, int, int, int, int, int, int, int) (score 2.3302358973548727)
+  ../packages/LULESH/lulesh-init.cc:219 _ZN6Domain9BuildMeshEiii -- Domain::BuildMesh(int, int, int) (score 1.4315005606175104)
+  ../packages/LULESH/lulesh.cc:1362 _Z14CalcElemVolumePKdS0_S0_ -- CalcElemVolume(double const*, double const*, double const*) (score 0.9536115035892543)
+  ../packages/LULESH/lulesh.cc:1507 _Z22CalcKinematicsForElemsR6Domaindi -- CalcKinematicsForElems(Domain&, double, int) (score 0.665781828022106)
+  ../packages/LULESH/lulesh.cc:2651 _Z11lulesh_mainiPPc -- lulesh_main(int, char**) (score 0.3328909140110529)
+```
+
+These results took 34 compilation and test run cycles to identify.  What if we
+only wanted the top 1 contributor to variability?  Can we do better?  Maybe...
+
+Let's rerun that FLiT Bisect run but with this alternative algorithm, saying we
+are only interested in the one top contributor.  We do this with the
+`--biggest` flag (or `-k` for short).
+
+```bash
+$ flit bisect --biggest=1 --delete --precision=double "g++ -O3 -funsafe-math-optimizations" LuleshTest
+Updating ground-truth results - ground-truth.csv - done
+Looking for the top 1 different symbol(s) by starting with files
+  Created ./bisect-06/bisect-make-01.mk - compiling and running - score 7.024320049201593
+  Created ./bisect-06/bisect-make-02.mk - compiling and running - score 3.7609285311270604
+  Created ./bisect-06/bisect-make-03.mk - compiling and running - score 0.022750390077923448
+  Created ./bisect-06/bisect-make-04.mk - compiling and running - score 0.0
+  Created ./bisect-06/bisect-make-05.mk - compiling and running - score 3.7609285311270604
+  Created ./bisect-06/bisect-make-06.mk - compiling and running - score 3.7609285311270604
+  Created ./bisect-06/bisect-make-07.mk - compiling and running - score 0.0
+    Found differing source file ../packages/LULESH/lulesh-init.cc: score 3.7609285311270604
+    Searching for differing symbols in: ../packages/LULESH/lulesh-init.cc
+      Created ./bisect-06/bisect-make-08.mk - compiling and running - score 3.7609285311270604
+      Created ./bisect-06/bisect-make-09.mk - compiling and running - score 1.4315005606175104
+      Created ./bisect-06/bisect-make-10.mk - compiling and running - score 2.3302358973548727
+      Created ./bisect-06/bisect-make-11.mk - compiling and running - score 0.0
+      Created ./bisect-06/bisect-make-12.mk - compiling and running - score 2.3302358973548727
+      Created ./bisect-06/bisect-make-13.mk - compiling and running - score 0.0
+      Created ./bisect-06/bisect-make-14.mk - compiling and running - score 2.3302358973548727
+      Created ./bisect-06/bisect-make-15.mk - compiling and running - score 0.0
+      Created ./bisect-06/bisect-make-16.mk - compiling and running - score 2.3302358973548727
+        Found differing symbol on line 16 -- Domain::Domain(int, int, int, int, int, int, int, int, int) (score 2.3302358973548727)
+  Created ./bisect-06/bisect-make-17.mk - compiling and running - score 0.0
+  Created ./bisect-06/bisect-make-18.mk - compiling and running - score 0.022750390077923448
+  Created ./bisect-06/bisect-make-19.mk - compiling and running - score 0.0
+  Created ./bisect-06/bisect-make-20.mk - compiling and running - score 0.022750390077923448
+    Found differing source file tests/LuleshTest.cpp: score 0.022750390077923448
+The found highest variability inducing source files:
+  ../packages/LULESH/lulesh-init.cc (score 3.7609285311270604)
+  tests/LuleshTest.cpp (score 0.022750390077923448)
+The 1 highest variability symbol:
+  ../packages/LULESH/lulesh-init.cc:16 _ZN6DomainC1Eiiiiiiiii -- Domain::Domain(int, int, int, int, int, int, int, int, int) (score 2.3302358973548727)
+```
+
+There are a few things to notice that are different here:
+
+1. We did find the biggest contributor: `Domain::Domain()`
+2. This took 20 compilation/test run cycles instead of 34
+3. Instead of finding all variability files at once, it found one, then
+   immediately searched for contributing functions from that file.
+
+This approach uses one further assumption: that the errors are additive.  This
+assumption can be violated, but in my experience, it appears to be a good
+heuristic.  That makes this approach only approximate.  _To be sure that you
+have the biggest contributor, you must search for all contributors._
+
+It is recommended that you use this approach for large code bases to identify
+the largest contributor, address it, and then rerun FLiT Bisect to address the
+next biggest one.
 
 
 ## Conclusion
