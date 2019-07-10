@@ -230,7 +230,7 @@ Likewise, defines the compilation used for the `make gt` target.
 
 ```ini
 [[compiler]]
-binary = 'g++'
+binary = 'g++-7'
 name = 'g++'
 type = 'gcc'
 optimization_levels = [
@@ -248,7 +248,7 @@ flags.  We keep it short for this tutorial for the sake of time.
 
 ```ini
 [[compiler]]
-binary = 'clang++'
+binary = 'clang++-6.0'
 name = 'clang++'
 type = 'clang'
 optimization_levels = [
@@ -467,7 +467,7 @@ differences in optimizations did not change very much with regards to timing.
 But that last row had a significant comparison value!  If you recall, the
 `comparison()` function from the test gives us a relative error accross the
 mesh using the $\ell_2$ norm.  That means that last row has 193% relative
-error!  That's huge!  Looking at the compilation of `g++ -O3 -mfma`, we can
+error!  That's huge!  Looking at the compilation of `g++-7 -O3 -mfma`, we can
 reasonably guess that the introduction of FMA instructions led to this change.
 
 Can we find out which function(s) introduce this variability when FMA is
@@ -525,16 +525,16 @@ $ flit update
 Creating ./Makefile
 ```
 
-Remember, the compilation that caused the variability was `g++ -O3 -mfma`.  FLiT Bisect requires at least three pieces of information:
+Remember, the compilation that caused the variability was `g++-7 -O3 -mfma`.  FLiT Bisect requires at least three pieces of information:
 
 1. The precision to use (e.g., `double`) (remember, our test classes are templated)
-2. The compilation causing variability (e.g., `g++ -O3 -mfma`)
+2. The compilation causing variability (e.g., `g++-7 -O3 -mfma`)
 3. The name of the FLiT test (e.g., `Mfem13`)
 
 Let us use FLiT Bisect to find the site:
 
 ```bash
-$ flit bisect --precision=double "g++ -O3 -mfma" Mfem13
+$ flit bisect --precision=double "g++-7 -O3 -mfma" Mfem13
 Updating ground-truth results - ground-truth.csv - done
 Searching for differing source files:
   Created ./bisect-01/bisect-make-01.mk - compiling and running - score 193.00735125466363
