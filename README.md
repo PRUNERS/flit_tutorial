@@ -230,7 +230,7 @@ Likewise, defines the compilation used for the `make gt` target.
 
 ```ini
 [[compiler]]
-binary = 'g++'
+binary = 'g++-7'
 name = 'g++'
 type = 'gcc'
 optimization_levels = [
@@ -248,7 +248,7 @@ flags.  We keep it short for this tutorial for the sake of time.
 
 ```ini
 [[compiler]]
-binary = 'clang++'
+binary = 'clang++-6.0'
 name = 'clang++'
 type = 'clang'
 optimization_levels = [
@@ -411,14 +411,14 @@ and the given label.
 
 ```bash
 sqlite> select * from tests;
-id          run         name        host          compiler    optl        switches     precision   comparison_hex       comparison  file                              nanosec   
-----------  ----------  ----------  ------------  ----------  ----------  -----------  ----------  -------------------  ----------  --------------------------------  ----------
-1           1           Mfem13      yoga-manjaro  clang++     -O3         -ffast-math  d           0x00000000000000000  0.0         CLANG_yoga-manjaro_FFAST_MATH_O3  3040131848
-2           1           Mfem13      yoga-manjaro  clang++     -O3         -funsafe-ma  d           0x00000000000000000  0.0         CLANG_yoga-manjaro_FUNSAFE_MATH_  2996176148
-3           1           Mfem13      yoga-manjaro  clang++     -O3         -mfma        d           0x00000000000000000  0.0         CLANG_yoga-manjaro_MFMA_O3        2977203552
-4           1           Mfem13      yoga-manjaro  g++         -O3         -ffast-math  d           0x00000000000000000  0.0         GCC_yoga-manjaro_FFAST_MATH_O3    2915741629
-5           1           Mfem13      yoga-manjaro  g++         -O3         -funsafe-ma  d           0x00000000000000000  0.0         GCC_yoga-manjaro_FUNSAFE_MATH_OP  2967398717
-6           1           Mfem13      yoga-manjaro  g++         -O3         -mfma        d           0x4006c101e1c5965d6  193.007351  GCC_yoga-manjaro_MFMA_O3          2996904910
+id          run         name        host          compiler     optl        switches     precision   comparison_hex       comparison  file                              nanosec   
+----------  ----------  ----------  ------------  -----------  ----------  -----------  ----------  -------------------  ----------  --------------------------------  ----------
+1           1           Mfem13      yoga-manjaro  clang++-6.0  -O3         -ffast-math  d           0x00000000000000000  0.0         CLANG_yoga-manjaro_FFAST_MATH_O3  3040131848
+2           1           Mfem13      yoga-manjaro  clang++-6.0  -O3         -funsafe-ma  d           0x00000000000000000  0.0         CLANG_yoga-manjaro_FUNSAFE_MATH_  2996176148
+3           1           Mfem13      yoga-manjaro  clang++-6.0  -O3         -mfma        d           0x00000000000000000  0.0         CLANG_yoga-manjaro_MFMA_O3        2977203552
+4           1           Mfem13      yoga-manjaro  g++-7        -O3         -ffast-math  d           0x00000000000000000  0.0         GCC_yoga-manjaro_FFAST_MATH_O3    2915741629
+5           1           Mfem13      yoga-manjaro  g++-7        -O3         -funsafe-ma  d           0x00000000000000000  0.0         GCC_yoga-manjaro_FUNSAFE_MATH_OP  2967398717
+6           1           Mfem13      yoga-manjaro  g++-7        -O3         -mfma        d           0x4006c101e1c5965d6  193.007351  GCC_yoga-manjaro_MFMA_O3          2996904910
 ```
 
 Whoa, that's a lot.  Let's just pick a few columns that actually have
@@ -444,7 +444,7 @@ differences in optimizations did not change very much with regards to timing.
 But that last row had a significant comparison value!  If you recall, the
 `comparison()` function from the test gives us a relative error accross the
 mesh using the $\ell_2$ norm.  That means that last row has 193% relative
-error!  That's huge!  Looking at the compilation of `g++ -O3 -mfma`, we can
+error!  That's huge!  Looking at the compilation of `g++-7 -O3 -mfma`, we can
 reasonably guess that the introduction of FMA instructions led to this change.
 
 Can we find out which function(s) introduce this variability when FMA is
@@ -502,16 +502,16 @@ $ flit update
 Creating ./Makefile
 ```
 
-Remember, the compilation that caused the variability was `g++ -O3 -mfma`.  FLiT Bisect requires at least three pieces of information:
+Remember, the compilation that caused the variability was `g++-7 -O3 -mfma`.  FLiT Bisect requires at least three pieces of information:
 
 1. The precision to use (e.g., `double`) (remember, our test classes are templated)
-2. The compilation causing variability (e.g., `g++ -O3 -mfma`)
+2. The compilation causing variability (e.g., `g++-7 -O3 -mfma`)
 3. The name of the FLiT test (e.g., `Mfem13`)
 
 Let us use FLiT Bisect to find the site:
 
 ```bash
-$ flit bisect --precision=double "g++ -O3 -mfma" Mfem13
+$ flit bisect --precision=double "g++-7 -O3 -mfma" Mfem13
 Updating ground-truth results - ground-truth.csv - done
 Searching for differing source files:
   Created ./bisect-01/bisect-make-01.mk - compiling and running - score 193.00735125466363
