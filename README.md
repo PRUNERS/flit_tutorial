@@ -537,34 +537,36 @@ Let us use FLiT Bisect to find the site:
 $ flit bisect --precision=double "g++-7 -O3 -mfma" Mfem13
 Updating ground-truth results - ground-truth.csv - done
 Searching for differing source files:
-  Created ./bisect-01/bisect-make-01.mk - compiling and running - score 193.00735125466363
-  Created ./bisect-01/bisect-make-02.mk - compiling and running - score 193.00735125466363
-  Created ./bisect-01/bisect-make-03.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-04.mk - compiling and running - score 193.00735125466363
-    Found differing source file /home/.../packages/mfem/linalg/densemat.cpp: score 193.00735125466363
-  Created ./bisect-01/bisect-make-05.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-06.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-01.mk - compiling and running - score 193.00735125466363
+  Created ./bisect-04/bisect-make-02.mk - compiling and running - score 193.00735125466363
+  Created ./bisect-04/bisect-make-03.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-04.mk - compiling and running - score 193.00735125466363
+    Found differing source file /home/user1/Module-FLiT/packages/mfem/linalg/densemat.cpp: score 193.00735125466363
+  Created ./bisect-04/bisect-make-05.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-06.mk - compiling and running - score 0.0
 all variability inducing source file(s):
-  /home/.../packages/mfem/linalg/densemat.cpp (score 193.00735125466363)
-Searching for differing symbols in: /home/.../packages/mfem/linalg/densemat.cpp
-  Created ./bisect-01/bisect-make-07.mk - compiling and running - score 193.00735125466363
-  Created ./bisect-01/bisect-make-08.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-09.mk - compiling and running - score 193.00735125466363
-  Created ./bisect-01/bisect-make-10.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-11.mk - compiling and running - score 193.00735125466363
-  Created ./bisect-01/bisect-make-12.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-13.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-14.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-15.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-16.mk - compiling and running - score 193.00735125466363
+  /home/user1/Module-FLiT/packages/mfem/linalg/densemat.cpp (score 193.00735125466363)
+Searching for differing symbols in: /home/user1/Module-FLiT/packages/mfem/linalg/densemat.cpp
+  Created ./bisect-04/bisect-make-07.mk - compiling and running - score 193.00735125466363
+  Created ./bisect-04/bisect-make-08.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-09.mk - compiling and running - score 193.00735125466363
+  Created ./bisect-04/bisect-make-10.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-11.mk - compiling and running - score 193.00735125466363
+  Created ./bisect-04/bisect-make-12.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-13.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-14.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-15.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-16.mk - compiling and running - score 193.00735125466363
     Found differing symbol on line 3692 -- mfem::AddMult_a_AAt(double, mfem::DenseMatrix const&, mfem::DenseMatrix&) (score 193.00735125466363)
-  Created ./bisect-01/bisect-make-17.mk - compiling and running - score 0.0
-  Created ./bisect-01/bisect-make-18.mk - compiling and running - score 0.0
-  All differing symbols in /home/.../packages/mfem/linalg/densemat.cpp:
+  Created ./bisect-04/bisect-make-17.mk - compiling and running - score 0.0
+  Created ./bisect-04/bisect-make-18.mk - compiling and running - score 0.0
+  All differing symbols in /home/user1/Module-FLiT/packages/mfem/linalg/densemat.cpp:
     line 3692 -- mfem::AddMult_a_AAt(double, mfem::DenseMatrix const&, mfem::DenseMatrix&) (score 193.00735125466363)
 All variability inducing symbols:
-  /home/.../packages/mfem/linalg/densemat.cpp:3692 _ZN4mfem13AddMult_a_AAtEdRKNS_11DenseMatrixERS0_ -- mfem::AddMult_a_AAt(double, mfem::DenseMatrix const&, mfem::DenseMatrix&) (score 193.00735125466363)
+  /home/user1/Module-FLiT/packages/mfem/linalg/densemat.cpp:3692 _ZN4mfem13AddMult_a_AAtEdRKNS_11DenseMatrixERS0_ -- mfem::AddMult_a_AAt(double, mfem::DenseMatrix const&, mfem::DenseMatrix&) (score 193.00735125466363)
 ```
+
+(takes approximately 1 minute 30 seconds)
 
 That's all there is to it.  FLiT Bisect first searches over files and it found
 `mfem/linalg/densemat.cpp` to be the only file contributing to variability.
@@ -655,15 +657,20 @@ Enter ".help" for usage hints.
 sqlite> .mode column
 sqlite> .headers on
 sqlite> select compiler, optl, switches, comparison, nanosec from tests;
-compiler    optl        switches           comparison            nanosec   
-----------  ----------  -----------------  --------------------  ----------
-clang++     -O3         -freciprocal-math  5.52511478433538e-05  405446965 
-clang++     -O3         -funsafe-math-opt  0.689064626793936     393748059 
-clang++     -O3                            0.0                   394413454 
-g++         -O3         -freciprocal-math  5.52511478433538e-05  419042807 
-g++         -O3         -funsafe-math-opt  7.6978613480105       401832683 
-g++         -O3         -mavx2 -mfma       1.02330009691563      373324843 
-g++         -O3                            0.0                   396359394 
+compiler     optl        switches           comparison            nanosec   
+-----------  ----------  -----------------  --------------------  ----------
+clang++-6.0  -O3         -freciprocal-math  5.52511478433538e-05  432218541 
+  33 seconds
+clang++-6.0  -O3         -funsafe-math-opt  5.52511478433538e-05  432185456 
+  33 seconds
+clang++-6.0  -O3                            0.0                   433397072 
+g++-7        -O3         -freciprocal-math  5.52511478433538e-05  441362811 
+  34 seconds
+g++-7        -O3         -funsafe-math-opt  7.02432004920159      436202864 
+  40 seconds
+g++-7        -O3         -mavx2 -mfma       1.02330009691563      416599918 
+  19 seconds
+g++-7        -O3                            0.0                   432654778 
 ```
 
 Again, we did not do a large search space.  Only 7 different compilations.  The
@@ -685,7 +692,7 @@ Creating ./Makefile
 Now, let's run FLiT Bisect automatically from the results database file.
 
 ```bash
-$ flit bisect --auto-sqlite-run ./results.sqlite --parallel 1 --jobs 1 --delete
+$ flit bisect --auto-sqlite-run ./results.sqlite --parallel 1 --jobs 1
 ```
 
 Let me explain this commant a bit:
@@ -701,9 +708,6 @@ Let me explain this commant a bit:
 - `--jobs` how many processes can be used during compilation.  This is
   converted to `-jN` for GNU Make where N is the number passed to this flag.
   This is only for compilations and not for test executions.
-- `--delete` tells FLiT Bisect to delete unnecessary files as it goes.  This
-  may be necessary if the compiled executable is pretty large and you would run
-  out of disk space otherwise.
 
 and its output:
 
@@ -741,6 +745,8 @@ Searching for differing symbols in: tests/LuleshTest.cpp
   Created ./bisect-01/bisect-make-13.mk - compiling and running - score 0.0
 [...]
 ```
+
+(takes about 3 minutes 10 seconds)
 
 FLiT Bisect will first make all compilations before running any Bisect steps in
 order to eliminate race conditions.  Then the regular bisect occurs.
@@ -800,7 +806,7 @@ are only interested in the one top contributor.  We do this with the
 `--biggest` flag (or `-k` for short).
 
 ```bash
-$ flit bisect --biggest=1 --delete --precision=double "g++ -O3 -funsafe-math-optimizations" LuleshTest
+$ flit bisect --biggest=1 --precision=double "g++-7 -O3 -funsafe-math-optimizations" LuleshTest
 Updating ground-truth results - ground-truth.csv - done
 Looking for the top 1 different symbol(s) by starting with files
   Created ./bisect-06/bisect-make-01.mk - compiling and running - score 7.024320049201593
@@ -833,6 +839,8 @@ The found highest variability inducing source files:
 The 1 highest variability symbol:
   ../packages/LULESH/lulesh-init.cc:16 _ZN6DomainC1Eiiiiiiiii -- Domain::Domain(int, int, int, int, int, int, int, int, int) (score 2.3302358973548727)
 ```
+
+(takes about 16 seconds)
 
 There are a few things to notice that are different here:
 
