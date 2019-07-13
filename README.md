@@ -1,7 +1,7 @@
-# PEARC FLiT Examples
+# PEARC FLiT Exercises
 
-FLiT is a great tool to measure the effect of compiler optimizations on your
-numerical code.  These measurements can identify where optimizations
+FLiT is a unique tool that measures the effect of compiler optimizations on
+your numerical code.  These measurements can identify where optimizations
 significantly impact susceptible algorithms.
 
 Not only can FLiT identify which compilations cause variability and by how
@@ -35,7 +35,7 @@ This does not, however, download or install FLiT.  For that, please go to the
 how to build, install, and use FLiT.
 
 
-## Example 01: MFEM Variability
+## Exercise-1: MFEM Variability
 
 The files for this tutorial exercise can be found in `exercise-1/`.
 
@@ -474,7 +474,7 @@ Can we find out which function(s) introduce this variability when FMA is
 introduced?
 
 
-## Example 02: MFEM Bisect
+## Exercise-2: MFEM Bisect
 
 With FLiT Bisect, we can identify the file and function sites within your code
 base where variability is introduced.
@@ -635,7 +635,7 @@ for the algorithm to understand why FMA here causes such ruckus with our
 finite-element code.
 
 
-## Example 03: LULESH Auto-Bisect
+## Exercise-3: LULESH Auto-Bisect
 
 For this exercise, we will go into a different directory:
 
