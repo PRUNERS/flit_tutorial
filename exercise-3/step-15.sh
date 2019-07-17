@@ -1,4 +1,4 @@
-#!/usr/bin/bash -x
+#!/bin/bash -x
 flit bisect \
   --biggest=1 \
   --precision=double \

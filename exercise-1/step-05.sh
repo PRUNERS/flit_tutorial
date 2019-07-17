@@ -1,4 +1,4 @@
-#!/usr/bin/bash -x
+#!/bin/bash -x
 echo "Tables in results.sqlite:"
 sqlite3 results.sqlite ".tables"
 

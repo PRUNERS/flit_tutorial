@@ -1,2 +1,2 @@
-#!/usr/bin/bash -x
+#!/bin/bash -x
 make run -j1

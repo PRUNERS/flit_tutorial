@@ -1,4 +1,4 @@
-#!/usr/bin/bash -x
+#!/bin/bash -x
 flit bisect \
   --auto-sqlite-run ./results.sqlite \
   --parallel 1 \

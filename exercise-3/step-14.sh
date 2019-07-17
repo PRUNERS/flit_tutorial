@@ -1,2 +1,2 @@
-#!/usr/bin/bash -x
+#!/bin/bash -x
 head -n 3 auto-bisect.csv

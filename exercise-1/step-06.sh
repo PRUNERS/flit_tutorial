@@ -1,4 +1,4 @@
-#!/usr/bin/bash -x
+#!/bin/bash -x
 echo "Table tests:"
 sqlite3 \
   -cmd '.mode column' \
