@@ -671,6 +671,7 @@ g++-7        -O3         -funsafe-math-opt  7.02432004920159      436202864
 g++-7        -O3         -mavx2 -mfma       1.02330009691563      416599918 
   19 seconds
 g++-7        -O3                            0.0                   432654778 
+sqlite> .q
 ```
 
 Again, we did not do a large search space.  Only 7 different compilations.  The
