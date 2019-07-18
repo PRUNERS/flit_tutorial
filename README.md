@@ -646,7 +646,9 @@ $ cd ../exercise-3/
 This is now related to a different code project -- LULESH.  We will not look
 into the configuration too much, it is very similar to the MFEM configuration.
 
-You will find an already created `results.sqlite` database.  Since we have already demonstrated how to generate the results, we figured we didn't want to put you through that again (and we can save time).
+You will find an already created `results.sqlite` database.  Since we have
+already demonstrated how to generate the results, we figured we didn't want to
+put you through that again (and we can save time).
 
 Let's look at the results:
 
