@@ -67,12 +67,12 @@ flit::Variant Mfem13<double>::run_impl(const std::vector<double> &ti) {
   FLIT_UNUSED(ti);
 
   // Run in a temporary directory so output files don't clash
-  std::string start_dir = flit::fsutil::curdir();
-  flit::fsutil::TempDir exec_dir;
-  flit::fsutil::PushDir pusher(exec_dir.name());
+  std::string start_dir = flit::curdir();
+  flit::TempDir exec_dir;
+  flit::PushDir pusher(exec_dir.name());
 
   // Run the example's main under MPI
-  auto meshfile = flit::fsutil::join(start_dir, "data", "beam-tet.mesh");
+  auto meshfile = flit::join(start_dir, "data", "beam-tet.mesh");
   auto result = flit::call_mpi_main(
                      mfem_13p_main,
                      "mpirun -n 1 --bind-to none",
@@ -96,7 +96,7 @@ flit::Variant Mfem13<double>::run_impl(const std::vector<double> &ti) {
   // Get the mesh
   ostringstream mesh_name;
   mesh_name << "mesh." << setfill('0') << setw(6) << 0;
-  std::string mesh_str = flit::fsutil::readfile(mesh_name.str());
+  std::string mesh_str = flit::readfile(mesh_name.str());
   retval.emplace_back(mesh_str);
 
   // Read calculated values
@@ -104,7 +104,7 @@ flit::Variant Mfem13<double>::run_impl(const std::vector<double> &ti) {
     ostringstream mode_name;
     mode_name << "mode_" << setfill('0') << setw(2) << i << "."
               << setfill('0') << setw(6) << 0;
-    std::string mode_str = flit::fsutil::readfile(mode_name.str());
+    std::string mode_str = flit::readfile(mode_name.str());
 
     retval.emplace_back(mode_str);
   }
