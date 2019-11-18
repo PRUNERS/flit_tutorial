@@ -1,7 +1,7 @@
 #!/bin/bash
 
-set -e
-set -u
+set -e # exit on any failure
+set -u # exit if using an undefined variable
 
 export MAKEFLAGS=-j$(nproc)
 export HYPRE_VERSION=2.11.2
@@ -12,7 +12,9 @@ export MFEM_VERSION=3.4
 success_log="packages/success.log"
 force=false
 
-# implement command-line parsing
+#
+# command-line parsing
+#
 while [ $# -gt 0 ]; do
   case $1 in
 
@@ -47,6 +49,9 @@ Options:
 
     -f|--force)
       force=true
+      echo "Forcing setup"
+      echo
+      rm -rf ${success_log}
       ;;
 
     *)
@@ -59,23 +64,22 @@ Options:
 
   shift # next argument
 done
+# end of command-line parsing
 
 if [ "$force" != "true" ] && [ -f "${success_log}" ]; then
   echo "Setup has already been performed - nothing to do"
   exit 0
 fi
 
-if [ "$force" = "true" ]; then
-  echo "Forcing setup"
-  echo
-  rm -rf ${success_log}
-fi
+#
+# Begin setup
+#
 
 mkdir -p packages
 pushd packages
 
 # clone and build hypre
-rm -rf hypre-${HYPRE_VERSION} hypre-2.10.0b hypre
+rm -rf v${HYPRE_VERSION}.tar.gz hypre-${HYPRE_VERSION} hypre-2.10.0b hypre
 wget https://github.com/hypre-space/hypre/archive/v${HYPRE_VERSION}.tar.gz
 tar -xzf v${HYPRE_VERSION}.tar.gz
 rm v${HYPRE_VERSION}.tar.gz
@@ -87,7 +91,7 @@ make
 popd
 
 # clone and build metis
-rm -rf metis-${METIS_VERSION} metis-4.0 metis
+rm -rf metis-${METIS_VERSION}.tar.gz metis-${METIS_VERSION} metis-4.0 metis
 wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/OLD/metis-${METIS_VERSION}.tar.gz
 tar -xzf metis-${METIS_VERSION}.tar.gz
 make --directory metis-${METIS_VERSION}
@@ -107,7 +111,7 @@ rm metis-${METIS_VERSION}.tar.gz
 ## ln -s metis-${METIS_VERSION} metis-4.0
 
 # clone and build mfem
-rm -rf mfem-${MFEM_VERSION} mfem
+rm -rf v${MFEM_VERSION}.tar.gz mfem-${MFEM_VERSION} mfem
 wget https://github.com/mfem/mfem/archive/v${MFEM_VERSION}.tar.gz
 tar -xzf v${MFEM_VERSION}.tar.gz
 rm v${MFEM_VERSION}.tar.gz
@@ -116,10 +120,10 @@ make config MFEM_USE_MPI=YES --directory mfem-${MFEM_VERSION}
 make --directory mfem-${MFEM_VERSION}
 
 # glvis is not necessary for the tutorial, but if desired, the user can
-# uncomment this section.
+# uncomment this section as well as the GLVIS_VERSION variable at the top.
 #
 ## # clone and build glvis
-## rm -rf glvis-${GLVIS_VERSION} glvis
+## rm -rf glvis-${GLVIS_VERSION}.tgz glvis-${GLVIS_VERSION} glvis
 ## wget http://glvis.github.io/releases/glvis-${GLVIS_VERSION}.tgz
 ## tar -xzf glvis-${GLVIS_VERSION}.tgz
 ## rm glvis-${GLVIS_VERSION}.tgz
