@@ -10,10 +10,65 @@ export MFEM_VERSION=3.4
 # export GLVIS_VERSION=3.4
 
 success_log="packages/success.log"
+force=false
 
-if [ -f "${success_log}" ]; then
+# implement command-line parsing
+while [ $# -gt 0 ]; do
+  case $1 in
+
+    -h|--help)
+      echo "
+Usage:
+  $0 [-h|--help]
+  $0 [-f|--force]
+
+Description:
+  Performs setup of the dependent packages used in the FLiT
+  tutorial examples.  It will download and configure MFEM and
+  LULESH with their respective dependencies.
+
+  This script does not download or install FLiT.  That can be done
+  simply with
+
+    $ git clone https://github.com/PRUNERS/FLiT.git
+    $ make --directory FLiT
+
+  The installation documentation can be found in
+
+    FLiT/documentation/installation.md
+
+Options:
+
+  -h, --help   Print this help documentation and exit
+  -f, --force  Force setup script to run even if it was previously successful
+"
+      exit 0
+      ;;
+
+    -f|--force)
+      force=true
+      ;;
+
+    *)
+      echo "Unrecognized argument: $1" >&2
+      echo "Call $0 --help for more information" >&2
+      exit 1
+      ;;
+
+  esac
+
+  shift # next argument
+done
+
+if [ "$force" != "true" ] && [ -f "${success_log}" ]; then
   echo "Setup has already been performed - nothing to do"
   exit 0
+fi
+
+if [ "$force" = "true" ]; then
+  echo "Forcing setup"
+  echo
+  rm -rf ${success_log}
 fi
 
 mkdir -p packages
