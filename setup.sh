@@ -119,6 +119,11 @@ ln -s mfem-${MFEM_VERSION} mfem
 make config MFEM_USE_MPI=YES --directory mfem-${MFEM_VERSION}
 make --directory mfem-${MFEM_VERSION}
 
+# symbolically link mfem data directory
+rm -rf ../exercise-1/data ../exercise-2/data
+ln -s ../packages/mfem/data ../exercise-1/data
+ln -s ../packages/mfem/data ../exercise-2/data
+
 # glvis is not necessary for the tutorial, but if desired, the user can
 # uncomment this section as well as the GLVIS_VERSION variable at the top.
 #
