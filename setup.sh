@@ -128,6 +128,7 @@ make --directory mfem-${MFEM_VERSION}
 ## make MFEM_DIR=../mfem-${MFEM_VERSION} --directory glvis-${GLVIS_VERSION}
 
 # clone LULESH
+rm -rf LULESH
 git clone https://github.com/LLNL/LULESH.git
 
 # out of packages
