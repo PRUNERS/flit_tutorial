@@ -1,4 +1,4 @@
-# PEARC FLiT Exercises
+# FLiT Tutorial Exercises
 
 FLiT is a unique tool that measures the effect of compiler optimizations on
 your numerical code.  These measurements can identify where optimizations
