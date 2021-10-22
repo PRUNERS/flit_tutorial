@@ -20,6 +20,30 @@ We will go through three exercises for using FLiT.
    through all of the variability compilations found in the first step.
 
 
+## Prerequisites
+
+This tutorial expects the following packages to be installed:
+
+- `wget`
+- `clang-6.0`
+- `g++-7`
+- `make`
+- some form of MPI, such as `mpich` or `openmpi`
+- `sqlite3`
+- `pygmentize` tool for color output (only if you use the base scripts).  For
+  older Ubuntu, it is from `python-pygments`.  For Ubuntu 20.04, it is in
+  `python3-pygments`.
+
+For Ubuntu 20.04, you do
+
+```bash
+sudo apt install wget clang-6.0 g++-7 make mpich libmpich-dev sqlite3 python3-pygmentss
+```
+
+You will need to make sure that the default compiler for mpich is compatible
+with `g++-7` and `clang-6.0`.
+
+
 ## Setup
 
 For the tutorial, setup has already been performed.  If you are running this
